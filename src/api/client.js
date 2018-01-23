@@ -2,7 +2,7 @@ import request from 'superagent'
 
 export default class ApiClient {
   defaultOptions = {
-    tokenStorageKey: 'recipeApiJWT'
+    tokenStorageKey: 'evaToolApiJWT'
   }
 
   constructor(host, options = {}) {
@@ -14,7 +14,6 @@ export default class ApiClient {
     return request
       .get(this.createUrl(path))
       .set(this.headers())
-
   }
 
   post(path, data = {}) {
