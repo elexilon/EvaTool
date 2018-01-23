@@ -8,14 +8,14 @@ const api = new ApiClient()
 
 export const userSignedOut = () => {
   return dispatch => {
-    const path = 'sessions'
 
-    dispatch(loading(path, true))
+    dispatch(loading(true))
     api.removeToken()
-    dispatch(loading(path))
+    dispatch(loading())
     dispatch({type: USER_SIGNED_OUT})
     dispatch(push('/'))
   }
 }
+
 
 export default userSignedOut

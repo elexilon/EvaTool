@@ -6,40 +6,25 @@ export const USER_SIGNED_IN = 'USER_SIGNED_IN'
 
 const api = new ApiClient()
 
-export default (user) => {
 
+export default ({ email, password}) => {
   return dispatch => {
-    const path = 'sessions'
-    api.post(path, user)
-      .then(res => {
-        dispatch(loading(true))
-        api.storeToken(res.body.token)
-        dispatch(push('/'))
-        dispatch(loading())
-      })
-      .catch(err => {
-        dispatch(loading(true))
-        dispatch(showError(err))
-        dispatch(loading())
-      })
-  }
-}
+    dispatch(loading(true))
 
-export const userSignedIn = () => {
-  return dispatch => {
-    const path = 'users/me'
-      if (!api.isAuthenticated()) return
-
-      api.get(path)
-      .then(res => {
-        dispatch(loading(true))
+    api.authenticate(email, password)
+      .then((res) => {
+        dispatch(loading())
+        const jwt = res.body.token
+        api.storeToken(jwt)
+        dispatch(push('/classes'))
+        return api.get('/users/me')
+      })
+      .then((res) => {
         dispatch({ type: USER_SIGNED_IN, payload: res.body })
-        dispatch(loading())
       })
-      .catch(err => {
-        dispatch(loading(true))
-        dispatch(showError(err))
+      .catch((error) => {
         dispatch(loading())
+        dispatch(showError(error))
       })
   }
 }

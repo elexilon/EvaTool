@@ -59,6 +59,10 @@ export default class ApiClient {
     return !!this.getToken()
   }
 
+  authenticate(email, password) {
+    return this.post('sessions', { email, password })
+  }
+
   // Create a full URL to our API, including the host and path
   createUrl(path) {
     return [this.host, path].join('/')
