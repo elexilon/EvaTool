@@ -31,7 +31,7 @@ class ClassContainer extends PureComponent {
   }
 
   newClass(event) {
-    this.props.push("/classes/new")
+    this.props.push("/schoolclasses/new")
   }
 
   goToClass = classId => event => this.props.push(`/classes/${classId}`)
@@ -73,13 +73,8 @@ class ClassContainer extends PureComponent {
           primary={true} />
         <Paper className="paper">
           <div style={styles.root}>
-
-            <GridList
-              cols={3}
-              padding={20}
-            >
+            <GridList cols={3} padding={20} >
               {this.props.classes.map(this.renderClass)}
-
             </GridList>
           </div>
         </Paper>
