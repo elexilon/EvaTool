@@ -10,8 +10,6 @@ import Chip from 'material-ui/Chip'
 import {blue300, red300} from 'material-ui/styles/colors'
 import FlatButton from 'material-ui/FlatButton'
 
-
-
 const styles = {
   root: {
     display: 'flex',

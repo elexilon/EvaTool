@@ -20,8 +20,9 @@ export const newClass = (schoolClass) => {
 
     api.post("classes", schoolClass)
       .then((res) => {
-        dispatch(loading())
         dispatch({ type: NEW_CLASS, payload: res.body })
+        dispatch(loading())
+        dispatch(push('/'))
       })
       .catch((error) => {
         dispatch(loading())

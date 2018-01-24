@@ -3,11 +3,32 @@ import PropTypes from 'prop-types'
 import './SchoolClass.css'
 import { connect } from 'react-redux'
 import { fetchOneClass } from '../actions/schoolclass/fetch'
+import RaisedButton from 'material-ui/RaisedButton'
+import Paper from 'material-ui/Paper'
+import {GridList, GridTile} from 'material-ui/GridList'
+import LinearProgress from 'material-ui/LinearProgress'
+
+const styles = {
+  root: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+    overflowY: 'auto',
+  },
+  titleStyle: {
+    color: 'rgb(0, 0, 0)',
+    cursor: 'pointer',
+  },
+}
 
 const studentShape = PropTypes.shape({
   fullName: PropTypes.string.isRequired,
   photo: PropTypes.string.isRequired,
-  Evaluations: PropTypes.arrayOf(PropTypes.object)
+  evaluations: PropTypes.arrayOf(PropTypes.object)
 })
 
 class SchoolClass extends PureComponent {
@@ -17,7 +38,6 @@ class SchoolClass extends PureComponent {
       batch: PropTypes.number.isRequired,
       startsAt: PropTypes.string,
       endsAt: PropTypes.string,
-      createdBy: PropTypes.object.isRequired,
       students: PropTypes.arrayOf(studentShape)
     })
   }
@@ -28,27 +48,55 @@ class SchoolClass extends PureComponent {
     if (!schoolClass) { fetchOneClass(classid) }
   }
 
+  newStudent(event) {
+    //this.props.push("/classes/")
+  }
+
+  renderStudent(tile) {
+    return (<GridTile
+      key={tile.photo}
+      title={tile.fullName}
+      titleBackground="linear-gradient(to top, rgba(190,190,0,0.7) 0%,rgba(190,190,0,0.3) 70%,rgba(190,190,0,0) 100%)"
+      titleStyle={styles.titleStyle}
+    >
+      <img className="imgover" src={tile.photo} alt={tile.fullName} />
+    </GridTile>
+    )
+  }
+
   render() {
-    const { batch, startsAt, endsAt } = this.props
+    const { schoolClass } = this.props
+
+    if(!schoolClass) return null
 
     return(
-      <article className="SchoolClass">
-        <header>
-          <h1>batch #{batch}</h1>
-        </header>
-        <div>
-          <p>{ startsAt }</p>
-          <p>{ endsAt }</p>
-        </div>
-      </article>
+      <div className="ClassContainer">
+        <h1>Batch #{schoolClass.batch}</h1>
+        <RaisedButton
+          onClick={ this.newStudent.bind(this) }
+          label="Create Student"
+          primary={true} />
+        <Paper className="paper">
+
+        <LinearProgress color="red" mode="determinate" value={20} />
+        <LinearProgress color="yellow" mode="determinate" value={30} />
+        <LinearProgress color="blue" mode="determinate" value={50} />
+        <br/>
+          <div style={styles.root}>
+            <GridList cols={3} padding={20} >
+              {schoolClass.students.map(this.renderStudent)}
+            </GridList>
+          </div>
+        </Paper>
+      </div>
     )
   }
 }
-
+  //{//schoolClass.students.map(this.renderStudent)}
 const mapStateToProps = ({ currentUser, classes }, { match }) => {
   const schoolClass = classes.filter((g) => (g._id === match.params.classid))[0]
   return {
-    schoolClass
+    schoolClass,
   }
 }
 

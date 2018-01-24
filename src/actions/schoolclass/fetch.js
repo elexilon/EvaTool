@@ -20,8 +20,8 @@ export const fetchClasses = () => {
 
     api.get("classes")
       .then((res) => {
-        dispatch(loading())
         dispatch({ type: FETCH_CLASSES, payload: res.body })
+        dispatch(loading())
       })
       .catch((error) => {
         dispatch(loading())
@@ -43,8 +43,8 @@ export const fetchOneClass = (classId) => {
 
     api.get(`classes/${classId}`)
       .then((res) => {
-        dispatch(loading())
         dispatch({ type: FETCH_ONE_CLASS, payload: res.body })
+        dispatch(loading())
       })
       .catch((error) => {
         dispatch(loading())

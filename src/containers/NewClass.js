@@ -20,24 +20,20 @@ export class NewClass extends PureComponent {
   static propTypes = {
     push: PropTypes.func.isRequired,
     newClass: PropTypes.func.isRequired,
-    currentUser: PropTypes.object.isRequired,
   }
 
   state = {}
 
   submitForm(event) {
     event.preventDefault()
-    const { currentUser } = this.props
     const starts = this.refs.startsAt.getDate()
     const ends = this.refs.endsAt.getDate()
-
 
     if (this.validateAll(starts, ends)) {
       const schoolClass = {
         batch: this.refs.batch.getValue(),
         startsAt: this.refs.startsAt.getDate(),
-        endsAt: this.refs.endsAt.getDate(),
-        createdBy: currentUser
+        endsAt: this.refs.endsAt.getDate()
       }
       this.props.newClass(schoolClass)
     }
@@ -135,6 +131,4 @@ export class NewClass extends PureComponent {
   }
 }
 
-const mapStateToProps = ({ currentUser }) => ({ currentUser })
-
-export default connect(mapStateToProps, { newClass, push })(NewClass)
+export default connect(null, { newClass, push })(NewClass)
