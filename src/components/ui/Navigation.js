@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import { push } from 'react-router-redux'
 import signOut from '../../actions/user/sign-out'
 
-const TITLE = 'Eva Tool'
+const TITLE = 'Student Evaluations'
 
 class Navigation extends PureComponent {
   static propTypes = {

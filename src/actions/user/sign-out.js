@@ -8,7 +8,6 @@ const api = new ApiClient()
 
 export const userSignedOut = () => {
   return dispatch => {
-
     dispatch(loading(true))
     api.removeToken()
     dispatch(loading())
@@ -16,6 +15,5 @@ export const userSignedOut = () => {
     dispatch(push('/'))
   }
 }
-
 
 export default userSignedOut
