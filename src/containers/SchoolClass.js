@@ -26,23 +26,10 @@ const styles = {
   },
 }
 
-const TITLE_YELLOW = "linear-gradient(to top, rgba(190,190,0,0.7) 0%,rgba(190,190,0,0.3) 70%,rgba(190,190,0,0) 100%)"
-const TITLE_RED = "linear-gradient(to top, rgba(190,0,0,0.7) 0%,rgba(190,0,0,0.3) 70%,rgba(190,0,0,0) 100%)"
-const TITLE_BLUE = "linear-gradient(to top, rgba(0,0,190,0.7) 0%,rgba(0,0,190,0.3) 70%,rgba(0,0,190,0) 100%)"
-const TITLE_WHITE = "linear-gradient(to top, rgba(190,190,190,0.7) 0%,rgba(190,190,190,0.3) 70%,rgba(190,190,190,0) 100%)"
-
-const getEvaColor = (evaColor) => {
-  switch (evaColor) {
-    case "YELLOW":
-      return TITLE_YELLOW
-    case "RED":
-      return TITLE_RED
-    case "BLUE":
-      return TITLE_BLUE
-    default:
-      return TITLE_WHITE
-  }
-}
+export const TITLE_YELLOW = "linear-gradient(to top, rgba(190,190,0,0.7) 0%,rgba(190,190,0,0.3) 70%,rgba(190,190,0,0) 100%)"
+export const TITLE_RED = "linear-gradient(to top, rgba(190,0,0,0.7) 0%,rgba(190,0,0,0.3) 70%,rgba(190,0,0,0) 100%)"
+export const TITLE_BLUE = "linear-gradient(to top, rgba(0,0,190,0.7) 0%,rgba(0,0,190,0.3) 70%,rgba(0,0,190,0) 100%)"
+export const TITLE_WHITE = "linear-gradient(to top, rgba(190,190,190,0.7) 0%,rgba(190,190,190,0.3) 70%,rgba(190,190,190,0) 100%)"
 
 const studentShape = PropTypes.shape({
   fullName: PropTypes.string.isRequired,
@@ -73,21 +60,40 @@ class SchoolClass extends PureComponent {
     this.props.push(`/classes/${schoolClass._id}/students`)
   }
 
+  getEvaColor(evaColor) {
+    switch (evaColor) {
+      case "YELLOW":
+        return TITLE_YELLOW
+      case "RED":
+        return TITLE_RED
+      case "BLUE":
+        return TITLE_BLUE
+      default:
+        return TITLE_WHITE
+    }
+  }
 
-  renderStudent(student) {
+  goToClass = studentId => event => this.props.push(`/classes/${this.props.schoolClass._id}/students/${studentId}`)
+
+  renderStudent(student, index) {
     const evaCount = student.evaluations.length
     const evaColor = !!student.evaluations[evaCount-1] ? student.evaluations[evaCount-1].evaluationColor : "WHITE"
 
-    const color = getEvaColor(evaColor)
-
+    const color = this.getEvaColor(evaColor)
 
     return (<GridTile
-      key={student.photo}
+      key={index}
       title={student.fullName}
       titleBackground={color}
       titleStyle={styles.titleStyle}
+      onClick={ this.goToClass(student._id) }
     >
-      <img className="imgover" src={student.photo} alt={student.fullName} />
+      <img
+        className="imgover"
+        src={student.photo}
+        alt={student.fullName}
+        onClick={this.goToClass(student._id)}
+      />
     </GridTile>
     )
   }
@@ -112,7 +118,7 @@ class SchoolClass extends PureComponent {
         <br/>
           <div style={styles.root}>
             <GridList cols={3} padding={20} >
-              {schoolClass.students.map(this.renderStudent)}
+              {schoolClass.students.map(this.renderStudent.bind(this))}
             </GridList>
           </div>
         </Paper>
@@ -121,7 +127,7 @@ class SchoolClass extends PureComponent {
   }
 }
 
-const mapStateToProps = ({ currentUser, classes }, { match }) => {
+const mapStateToProps = ({ classes }, { match }) => {
   const schoolClass = classes.filter((g) => (g._id === match.params.classid))[0]
   return {
     schoolClass,

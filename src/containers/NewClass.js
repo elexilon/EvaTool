@@ -7,7 +7,7 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import newClass from '../actions/schoolclass/create'
 import Title from '../components/ui/Title'
-import DatePicker from 'material-ui/DatePicker';
+import DatePicker from 'material-ui/DatePicker'
 
 
 const dialogStyle = {
