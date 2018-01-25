@@ -6,6 +6,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import './Student.css'
 import {GridTile, GridList} from 'material-ui/GridList'
 import { fetchOneClass } from '../actions/schoolclass/fetch'
+import { destroyStudent } from '../actions/schoolclass/destroy'
 import DatePicker from 'material-ui/DatePicker'
 
 import {TITLE_YELLOW, TITLE_RED, TITLE_BLUE, TITLE_WHITE} from './SchoolClass'
@@ -74,6 +75,11 @@ class Student extends PureComponent {
 
   newClass(event) {
     this.props.push("/classes/new")
+  }
+
+  deleteStudent(event) {
+    const { classid, studentid } = this.props.match.params
+    this.props.destroyStudent(classid, studentid)
   }
 
   goToClass = classId => event => this.props.push(`/classes/${classId}`)
@@ -170,6 +176,7 @@ class Student extends PureComponent {
               />
           </GridList>
         </div>
+        <br/>
         <DatePicker
           formatDate={this.formatDate}
           ref="date"
@@ -180,23 +187,23 @@ class Student extends PureComponent {
           errorText={ this.state.startsAtError }
           defaultDate={new Date()}
           />
-
-          <RaisedButton
-            onClick={ this.newClass.bind(this) }
-            label="Delete"
-            secondary={true} />
-
+          <br/>
           <RaisedButton
             onClick={ this.newClass.bind(this) }
             label="Save"
-            style={styles.buttonStyle}
             primary={true} />
 
           <RaisedButton
             onClick={ this.newClass.bind(this) }
             label="Save and Next"
-            style={styles.buttonStyle}
+
             primary={true} />
+
+            <RaisedButton
+              onClick={ this.deleteStudent.bind(this) }
+              label="Delete"
+              style={styles.buttonStyle}
+              secondary={true} />
         </Paper>
       </div>
     )
@@ -213,4 +220,4 @@ const mapStateToProps = ({ currentUser, classes }, { match }) => {
   }
 }
 
-export default connect(mapStateToProps, { push, fetchOneClass })(Student)
+export default connect(mapStateToProps, { push, fetchOneClass, destroyStudent })(Student)
