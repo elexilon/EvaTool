@@ -8,6 +8,7 @@ import {GridTile, GridList} from 'material-ui/GridList'
 import { fetchOneClass } from '../actions/schoolclass/fetch'
 import { destroyStudent } from '../actions/schoolclass/destroy'
 import DatePicker from 'material-ui/DatePicker'
+import { updateStudent } from '../actions/schoolclass/update'
 
 import {TITLE_YELLOW, TITLE_RED, TITLE_BLUE, TITLE_WHITE} from './SchoolClass'
 
@@ -62,7 +63,7 @@ class Student extends PureComponent {
 
     this.state = {
       evaColor: TITLE_WHITE,
-    };
+    }
   }
 
   componentWillMount() {
@@ -73,8 +74,39 @@ class Student extends PureComponent {
 
   state = {}
 
-  newClass(event) {
-    this.props.push("/classes/new")
+  saveStudent(event) {
+    event.preventDefault()
+
+    const date = this.refs.date.getDate()
+    const { _id  } = this.props.schoolClass
+    const student = this.props.student
+
+    const evaluation = this.props.student.evaluations.filter((g) => (
+      new Date(g.evaluatedAt).getTime() === date.getTime()))[0]
+
+    const updateEva = !evaluation ? {
+      evaluationColor: "RED",
+      evaluatedBy: this.props.currentUser._id,
+      evaluatedAt: new Date(date.getFullYear(), date.getMonth(), date.getDate() )
+    } : {
+      _id: evaluation._id,
+      evaluationColor: "BLUE",
+      evaluatedBy: evaluation.evaluatedBy,
+      evaluatedAt: new Date(new Date(evaluation.evaluatedAt).getFullYear(),
+                            new Date(evaluation.evaluatedAt).getMonth(),
+                            new Date(evaluation.evaluatedAt).getDate())
+    }
+
+    const evaluations = student.evaluations.filter((g) => (
+      new Date(g.evaluatedAt).getTime() !== date.getTime()))
+
+    const updateStudent = {
+      _id: this.props.student._id,
+      fullName: this.props.student.fullName,
+      photo: this.props.student.photo,
+      evaluations: [ { ...updateEva } ].concat(evaluations)
+    }
+    this.props.updateStudent(_id, updateStudent, this.props.student._id)
   }
 
   deleteStudent(event) {
@@ -102,17 +134,16 @@ class Student extends PureComponent {
   }
 
   validateDate(e, date) {
-    if (!!date) {
-      this.setState({
-        startsAtError: null
-      })
-      return true
-    }
+    if (!date) { return null }
+
+    const { student } = this.props
+    const evaluation = student.evaluations.filter((g) => (
+      new Date(g.evaluatedAt).getTime() === date.getTime()))[0]
 
     this.setState({
-      startsAtError: 'Please provide a correct Start date'
+      evaColor: !evaluation ? "WHITE" : this.getEvaColor(evaluation.evaluationColor)
     })
-    return false
+
   }
 
   changeRed(event){
@@ -137,12 +168,13 @@ class Student extends PureComponent {
   render() {
     const { student, schoolClass } = this.props
 
-
+    if(!student) return null
     if(!schoolClass) return null
 
     const evaCount = student.evaluations.length
     const evaColor = !!student.evaluations[evaCount-1] ? student.evaluations[evaCount-1].evaluationColor : "WHITE"
-    const color = this.getEvaColor(evaColor)
+    this.getEvaColor(evaColor)
+
 
     return (
       <div className="Student">
@@ -153,7 +185,7 @@ class Student extends PureComponent {
           <GridList cols={4} padding={20} >
             <GridTile
               title={student.fullName}
-              titleBackground={ color !== TITLE_WHITE ? color : this.state.evaColor}
+              titleBackground={ this.state.evaColor}
             >
               <img src={student.photo} alt={student.fullName} />
             </GridTile>
@@ -189,12 +221,12 @@ class Student extends PureComponent {
           />
           <br/>
           <RaisedButton
-            onClick={ this.newClass.bind(this) }
+            onClick={ this.saveStudent.bind(this) }
             label="Save"
             primary={true} />
 
           <RaisedButton
-            onClick={ this.newClass.bind(this) }
+            onClick={ this.saveStudent.bind(this) }
             label="Save and Next"
 
             primary={true} />
@@ -212,7 +244,7 @@ class Student extends PureComponent {
 
 const mapStateToProps = ({ currentUser, classes }, { match }) => {
   const schoolClass = classes.filter((g) => (g._id === match.params.classid))[0]
-  const student = !!schoolClass ? schoolClass.students.filter((s) => (s._id === match.params.studentid))[0] : []
+  const student = !!schoolClass ? schoolClass.students.filter((s) => (s._id === match.params.studentid))[0] : {}
   return {
     schoolClass,
     currentUser,
@@ -220,4 +252,4 @@ const mapStateToProps = ({ currentUser, classes }, { match }) => {
   }
 }
 
-export default connect(mapStateToProps, { push, fetchOneClass, destroyStudent })(Student)
+export default connect(mapStateToProps, { push, fetchOneClass, destroyStudent, updateStudent })(Student)

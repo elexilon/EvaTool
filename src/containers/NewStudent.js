@@ -52,7 +52,6 @@ export class NewStudent extends PureComponent {
         endsAt,
         students: [ {...newstud} ].concat(students)
       }
-      //console.log(updateClass)
       this.props.newStudent(_id, updateClass)
     }
     return false

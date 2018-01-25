@@ -7,7 +7,7 @@ export const UPDATE_STUDENT = 'UPDATE_STUDENT'
 
 const api = new ApiClient()
 
-export const updateStudent = (classId, updatedStudent) => {
+export const updateStudent = (classId, updatedStudent, nextStudentId) => {
   return dispatch => {
     dispatch(loading(true))
 
@@ -18,11 +18,11 @@ export const updateStudent = (classId, updatedStudent) => {
       return
     }
 
-    api.patch(`classes/${classId}/students`, updatedStudent)
+    api.patch(`classes/${classId}/update`, updatedStudent)
       .then((res) => {
         dispatch({ type: UPDATE_STUDENT, payload: res.body })
         dispatch(loading())
-        dispatch(push('/'))
+        dispatch(push(`/classes/${classId}/students/${nextStudentId}`))
       })
       .catch((error) => {
         dispatch(loading())
