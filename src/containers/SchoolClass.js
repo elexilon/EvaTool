@@ -7,6 +7,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import Paper from 'material-ui/Paper'
 import {GridList, GridTile} from 'material-ui/GridList'
 import LinearProgress from 'material-ui/LinearProgress'
+import { push } from 'react-router-redux'
 
 const styles = {
   root: {
@@ -23,6 +24,24 @@ const styles = {
     color: 'rgb(0, 0, 0)',
     cursor: 'pointer',
   },
+}
+
+const TITLE_YELLOW = "linear-gradient(to top, rgba(190,190,0,0.7) 0%,rgba(190,190,0,0.3) 70%,rgba(190,190,0,0) 100%)"
+const TITLE_RED = "linear-gradient(to top, rgba(190,0,0,0.7) 0%,rgba(190,0,0,0.3) 70%,rgba(190,0,0,0) 100%)"
+const TITLE_BLUE = "linear-gradient(to top, rgba(0,0,190,0.7) 0%,rgba(0,0,190,0.3) 70%,rgba(0,0,190,0) 100%)"
+const TITLE_WHITE = "linear-gradient(to top, rgba(190,190,190,0.7) 0%,rgba(190,190,190,0.3) 70%,rgba(190,190,190,0) 100%)"
+
+const getEvaColor = (evaColor) => {
+  switch (evaColor) {
+    case "YELLOW":
+      return TITLE_YELLOW
+    case "RED":
+      return TITLE_RED
+    case "BLUE":
+      return TITLE_BLUE
+    default:
+      return TITLE_WHITE
+  }
 }
 
 const studentShape = PropTypes.shape({
@@ -49,17 +68,26 @@ class SchoolClass extends PureComponent {
   }
 
   newStudent(event) {
-    //this.props.push("/classes/")
+    console.log("entra");
+    const { schoolClass } = this.props
+    this.props.push(`/classes/${schoolClass._id}/students`)
   }
 
-  renderStudent(tile) {
+
+  renderStudent(student) {
+    const evaCount = student.evaluations.length
+    const evaColor = !!student.evaluations[evaCount-1] ? student.evaluations[evaCount-1].evaluationColor : "WHITE"
+
+    const color = getEvaColor(evaColor)
+
+
     return (<GridTile
-      key={tile.photo}
-      title={tile.fullName}
-      titleBackground="linear-gradient(to top, rgba(190,190,0,0.7) 0%,rgba(190,190,0,0.3) 70%,rgba(190,190,0,0) 100%)"
+      key={student.photo}
+      title={student.fullName}
+      titleBackground={color}
       titleStyle={styles.titleStyle}
     >
-      <img className="imgover" src={tile.photo} alt={tile.fullName} />
+      <img className="imgover" src={student.photo} alt={student.fullName} />
     </GridTile>
     )
   }
@@ -74,7 +102,7 @@ class SchoolClass extends PureComponent {
         <h1>Batch #{schoolClass.batch}</h1>
         <RaisedButton
           onClick={ this.newStudent.bind(this) }
-          label="Create Student"
+          label="New Student"
           primary={true} />
         <Paper className="paper">
 
@@ -92,7 +120,7 @@ class SchoolClass extends PureComponent {
     )
   }
 }
-  //{//schoolClass.students.map(this.renderStudent)}
+
 const mapStateToProps = ({ currentUser, classes }, { match }) => {
   const schoolClass = classes.filter((g) => (g._id === match.params.classid))[0]
   return {
@@ -100,4 +128,4 @@ const mapStateToProps = ({ currentUser, classes }, { match }) => {
   }
 }
 
-export default connect(mapStateToProps, { fetchOneClass })(SchoolClass)
+export default connect(mapStateToProps, { fetchOneClass, push })(SchoolClass)

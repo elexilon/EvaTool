@@ -32,8 +32,8 @@ export class NewClass extends PureComponent {
     if (this.validateAll(starts, ends)) {
       const schoolClass = {
         batch: this.refs.batch.getValue(),
-        startsAt: this.refs.startsAt.getDate(),
-        endsAt: this.refs.endsAt.getDate()
+        startsAt: starts,
+        endsAt: ends
       }
       this.props.newClass(schoolClass)
     }

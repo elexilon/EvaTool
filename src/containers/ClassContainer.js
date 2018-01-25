@@ -29,7 +29,7 @@ class ClassContainer extends PureComponent {
   }
 
   newClass(event) {
-    this.props.push("/schoolclasses/new")
+    this.props.push("/classes/new")
   }
 
   goToClass = classId => event => this.props.push(`/classes/${classId}`)
