@@ -84,18 +84,27 @@ class Student extends PureComponent {
       new Date(g.evaluatedAt).getTime() === date.getTime()))[0]
 
     const updateEva = !evaluation ? {
-      evaluationColor: "RED",
+      evaluationColor: this.getColorName(this.state.evaColor),
       evaluatedBy: this.props.currentUser._id,
       evaluatedAt: new Date(date.getFullYear(), date.getMonth(), date.getDate() )
     } : {
       _id: evaluation._id,
-      evaluationColor: "GREEN",
+      evaluationColor: this.getColorName(this.state.evaColor),
       evaluatedBy: evaluation.evaluatedBy,
       evaluatedAt: new Date(new Date(evaluation.evaluatedAt).getFullYear(),
                             new Date(evaluation.evaluatedAt).getMonth(),
                             new Date(evaluation.evaluatedAt).getDate())
     }
 
+    if(updateEva.evaluatedBy !== this.props.currentUser._id){
+      this.setState({
+        dateError: "Not is your evaluation"
+      })
+    }else {
+      this.setState({
+        dateError: null
+      })
+    }
     const evaluations = student.evaluations.filter((g) => (
       new Date(g.evaluatedAt).getTime() !== date.getTime()))
 
@@ -113,7 +122,10 @@ class Student extends PureComponent {
     this.props.destroyStudent(classid, studentid)
   }
 
-  goToClass = classId => event => this.props.push(`/classes/${classId}`)
+  goToClass(event) {
+    const { classid } = this.props.match.params
+    this.props.push(`/classes/${classid}`)
+  }
 
   getEvaColor(evaColor) {
     switch (evaColor) {
@@ -125,6 +137,19 @@ class Student extends PureComponent {
         return TITLE_GREEN
       default:
         return TITLE_WHITE
+    }
+  }
+
+  getColorName(evaColor) {
+    switch (evaColor) {
+      case TITLE_YELLOW:
+        return "YELLOW"
+      case TITLE_RED:
+        return "RED"
+      case TITLE_GREEN:
+        return "GREEN"
+      default:
+        return "WHITE"
     }
   }
 
@@ -140,7 +165,7 @@ class Student extends PureComponent {
       new Date(g.evaluatedAt).getTime() === date.getTime()))[0]
 
     this.setState({
-      evaColor: !evaluation ? "WHITE" : this.getEvaColor(evaluation.evaluationColor)
+      evaColor: !evaluation ? TITLE_WHITE : this.getEvaColor(evaluation.evaluationColor)
     })
 
   }
@@ -170,15 +195,14 @@ class Student extends PureComponent {
     if(!student) return null
     if(!schoolClass) return null
 
-    const evaCount = student.evaluations.length
-    const evaColor = !!student.evaluations[evaCount-1] ? student.evaluations[evaCount-1].evaluationColor : "WHITE"
-    this.getEvaColor(evaColor)
-
-
     return (
       <div className="Student">
         <h1>Student</h1>
-        <h2>Batch #{schoolClass.batch}</h2>
+
+        <RaisedButton
+          onClick={ this.goToClass.bind(this) }
+          label={"Batch #" + schoolClass.batch}
+           />
         <Paper className="paper">
         <div style={styles.root}>
           <GridList cols={4} padding={20} >
@@ -215,7 +239,7 @@ class Student extends PureComponent {
           container="inline"
           mode="landscape"
           onChange={this.validateDate.bind(this)}
-          errorText={ this.state.startsAtError }
+          errorText={ this.state.dateError }
           defaultDate={new Date()}
           />
           <br/>
@@ -230,11 +254,11 @@ class Student extends PureComponent {
 
             primary={true} />
 
-            <RaisedButton
-              onClick={ this.deleteStudent.bind(this) }
-              label="Delete"
-              style={styles.buttonStyle}
-              secondary={true} />
+          <RaisedButton
+            onClick={ this.deleteStudent.bind(this) }
+            label="Delete"
+            style={styles.buttonStyle}
+            secondary={true} />
         </Paper>
       </div>
     )

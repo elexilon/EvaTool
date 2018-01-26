@@ -136,7 +136,7 @@ class SchoolClass extends PureComponent {
 
   getLastEvaColor(evaluations){
     const evaluation = evaluations.sort(function (a, b) {
-      return (new Date(a.evalugreenStudentatedAt).getTime()) - (new Date(b.evaluatedAt).getTime());
+      return (new Date(a.evaluatedAt).getTime()) - (new Date(b.evaluatedAt).getTime());
     })[evaluations.length-1]
 
     return !!evaluation ? evaluation.evaluationColor : "WHITE"

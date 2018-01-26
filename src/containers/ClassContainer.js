@@ -7,7 +7,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import './ClassContainer.css'
 import {GridList} from 'material-ui/GridList'
 import Chip from 'material-ui/Chip'
-import {blue300, red300} from 'material-ui/styles/colors'
 import FlatButton from 'material-ui/FlatButton'
 
 const styles = {
@@ -34,6 +33,10 @@ class ClassContainer extends PureComponent {
 
   goToClass = classId => event => this.props.push(`/classes/${classId}`)
 
+  formatDate(date){
+    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear()
+  }
+
   renderClass = (schoolClass, index) => {
     return (
       <Paper
@@ -43,12 +46,12 @@ class ClassContainer extends PureComponent {
       >
         <h1>batch #{schoolClass.batch}</h1>
 
-        <Chip backgroundColor={blue300} >
-          { new Date(schoolClass.startsAt).toUTCString() }
+        <Chip >
+          { this.formatDate(new Date(schoolClass.startsAt)) }
         </Chip>
 
-        <Chip backgroundColor={red300} >
-          { new Date(schoolClass.endsAt).toUTCString() }
+        <Chip  >
+          { this.formatDate(new Date(schoolClass.endsAt)) }
         </Chip>
 
         <FlatButton label="Go to class"
