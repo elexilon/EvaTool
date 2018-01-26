@@ -55,7 +55,6 @@ class SchoolClass extends PureComponent {
   }
 
   newStudent(event) {
-    console.log("entra");
     const { schoolClass } = this.props
     this.props.push(`/classes/${schoolClass._id}/students`)
   }
