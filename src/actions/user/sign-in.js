@@ -14,7 +14,7 @@ export default ({ email, password}) => {
         dispatch(loading())
         const jwt = res.body.token
         api.storeToken(jwt)
-        dispatch(push('/classes'))
+        dispatch(push('/'))
         return api.get('users/me')
       })
       .then((res) => {

@@ -166,8 +166,16 @@ class SchoolClass extends PureComponent {
 
   render() {
     const { schoolClass } = this.props
-
     if(!schoolClass) return null
+
+    const greenStudents = schoolClass.students.filter(student => this.getLastEvaColor(student.evaluations) === "GREEN")
+    const redStudents = schoolClass.students.filter(student => this.getLastEvaColor(student.evaluations)=== "RED")
+    const yellowStudents = schoolClass.students.filter(student => this.getLastEvaColor(student.evaluations) === "YELLOW")
+
+    const greenCount = greenStudents.length
+    const redCount = redStudents.length
+    const yellowCount = yellowStudents.length
+    const maxStudents = greenCount + redCount + yellowCount
 
     return(
       <div className="ClassContainer">
@@ -185,9 +193,9 @@ class SchoolClass extends PureComponent {
 
         <Paper className="paper">
 
-        <LinearProgress color="red" mode="determinate" value={20} />
-        <LinearProgress color="yellow" mode="determinate" value={30} />
-        <LinearProgress color="green" mode="determinate" value={50} />
+        <LinearProgress color="red" mode="determinate" value={redCount} max={maxStudents} />
+        <LinearProgress color="yellow" mode="determinate" value={yellowCount} max={maxStudents} />
+        <LinearProgress color="green" mode="determinate" value={greenCount} max={maxStudents} />
         <br/>
           <div style={styles.root}>
             <GridList cols={3} padding={20} >

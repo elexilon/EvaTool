@@ -100,6 +100,7 @@ class Student extends PureComponent {
       this.setState({
         dateError: "Not is your evaluation"
       })
+      return null
     }else {
       this.setState({
         dateError: null
@@ -165,7 +166,8 @@ class Student extends PureComponent {
       new Date(g.evaluatedAt).getTime() === date.getTime()))[0]
 
     this.setState({
-      evaColor: !evaluation ? TITLE_WHITE : this.getEvaColor(evaluation.evaluationColor)
+      evaColor: !evaluation ? TITLE_WHITE : this.getEvaColor(evaluation.evaluationColor),
+      dateError: null
     })
 
   }
