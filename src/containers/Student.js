@@ -10,13 +10,12 @@ import { destroyStudent } from '../actions/schoolclass/destroy'
 import DatePicker from 'material-ui/DatePicker'
 import { updateStudent } from '../actions/schoolclass/update'
 
-import {TITLE_YELLOW, TITLE_RED, TITLE_BLUE, TITLE_WHITE} from './SchoolClass'
+import {TITLE_YELLOW, TITLE_RED, TITLE_GREEN, TITLE_WHITE} from './SchoolClass'
 
 const styles = {
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-
   },
   gridList: {
     width: 500,
@@ -41,8 +40,8 @@ const styles = {
     display: 'inline-block',
     cursor: 'pointer',
   },
-  paperBlue: {
-    backgroundColor: 'blue',
+  paperGreen: {
+    backgroundColor: 'green',
     height: 100,
     width: 100,
     margin: 20,
@@ -90,7 +89,7 @@ class Student extends PureComponent {
       evaluatedAt: new Date(date.getFullYear(), date.getMonth(), date.getDate() )
     } : {
       _id: evaluation._id,
-      evaluationColor: "BLUE",
+      evaluationColor: "GREEN",
       evaluatedBy: evaluation.evaluatedBy,
       evaluatedAt: new Date(new Date(evaluation.evaluatedAt).getFullYear(),
                             new Date(evaluation.evaluatedAt).getMonth(),
@@ -122,8 +121,8 @@ class Student extends PureComponent {
         return TITLE_YELLOW
       case "RED":
         return TITLE_RED
-      case "BLUE":
-        return TITLE_BLUE
+      case "GREEN":
+        return TITLE_GREEN
       default:
         return TITLE_WHITE
     }
@@ -160,7 +159,7 @@ class Student extends PureComponent {
 
   changeBlue(event){
     this.setState({
-      evaColor: TITLE_BLUE,
+      evaColor: TITLE_GREEN,
     });
   }
 
@@ -202,7 +201,7 @@ class Student extends PureComponent {
               />
 
             <Paper
-              style={styles.paperBlue}
+              style={styles.paperGreen}
               circle={true}
               onClick={ this.changeBlue.bind(this) }
               />

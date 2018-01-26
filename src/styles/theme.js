@@ -13,9 +13,9 @@ export const grey30       = 'rgba(222, 222, 222, 0.7)'
 
 // Palette
 export const palette = {
-  primary1Color: green,
-  primary2Color: green,
-  primary3Color: green,
+  primary1Color: darkGrey,
+  primary2Color: darkGrey,
+  primary3Color: darkGrey,
   accent1Color: red,
   textColor: black,
   alternateTextColor: white,

@@ -28,7 +28,7 @@ const styles = {
 
 export const TITLE_YELLOW = "linear-gradient(to top, rgba(190,190,0,0.7) 0%,rgba(190,190,0,0.3) 70%,rgba(190,190,0,0) 100%)"
 export const TITLE_RED = "linear-gradient(to top, rgba(190,0,0,0.7) 0%,rgba(190,0,0,0.3) 70%,rgba(190,0,0,0) 100%)"
-export const TITLE_BLUE = "linear-gradient(to top, rgba(0,0,190,0.7) 0%,rgba(0,0,190,0.3) 70%,rgba(0,0,190,0) 100%)"
+export const TITLE_GREEN = "linear-gradient(to top, rgba(0,190,0,0.7) 0%,rgba(0,190,0,0.3) 70%,rgba(0,190,0,0) 100%)"
 export const TITLE_WHITE = "linear-gradient(to top, rgba(190,190,190,0.7) 0%,rgba(190,190,190,0.3) 70%,rgba(190,190,190,0) 100%)"
 
 const studentShape = PropTypes.shape({
@@ -66,8 +66,8 @@ class SchoolClass extends PureComponent {
         return TITLE_YELLOW
       case "RED":
         return TITLE_RED
-      case "BLUE":
-        return TITLE_BLUE
+      case "GREEN":
+        return TITLE_GREEN
       default:
         return TITLE_WHITE
     }
@@ -75,9 +75,75 @@ class SchoolClass extends PureComponent {
 
   goToClass = studentId => event => this.props.push(`/classes/${this.props.schoolClass._id}/students/${studentId}`)
 
+  getRandomStudent(students)
+  {
+    const obj_keys = Object.keys(students)
+    return students[obj_keys[Math.floor(Math.random() *obj_keys.length)]]
+  }
+
+  getStudent(event){
+    const { schoolClass } = this.props
+
+    const greenStudents = schoolClass.students.filter(student => this.getLastEvaColor(student.evaluations) === "GREEN")
+    const redStudents = schoolClass.students.filter(student => this.getLastEvaColor(student.evaluations)=== "RED")
+    const yellowStudents = schoolClass.students.filter(student => this.getLastEvaColor(student.evaluations) === "YELLOW")
+
+    const randNumber = Math.random() * (100 - 1) + 1
+
+    var selectedStudent = null
+
+    if(randNumber > 79) {
+      const greenStudent = this.getRandomStudent(greenStudents)
+      if(!greenStudent){
+        const yellowStudent = this.getRandomStudent(yellowStudents)
+        if(!yellowStudent){
+          selectedStudent = this.getRandomStudent(redStudents)
+        }else {
+          selectedStudent = yellowStudent
+        }
+      }else {
+        selectedStudent = greenStudent
+      }
+    } else if (randNumber > 47) {
+      const yellowStudent = this.getRandomStudent(yellowStudents)
+      if(!yellowStudent){
+        const redStudent = this.getRandomStudent(redStudents)
+        if(!redStudent){
+          selectedStudent = this.getRandomStudent(greenStudents)
+        }else {
+          selectedStudent = redStudent
+        }
+      }else {
+        selectedStudent = yellowStudent
+      }
+    }else{
+      const redStudent = this.getRandomStudent(redStudents)
+      if(!redStudent){
+        const yellowStudent = this.getRandomStudent(yellowStudents)
+        if(!yellowStudent){
+          this.getRandomStudent(greenStudents)
+        }else {
+          selectedStudent = yellowStudent
+        }
+      }else {
+        selectedStudent = redStudent
+      }
+    }
+    if(!!selectedStudent){
+      this.props.push(`/classes/${schoolClass._id}/students/${selectedStudent._id}`)
+    }
+  }
+
+  getLastEvaColor(evaluations){
+    const evaluation = evaluations.sort(function (a, b) {
+      return (new Date(a.evalugreenStudentatedAt).getTime()) - (new Date(b.evaluatedAt).getTime());
+    })[evaluations.length-1]
+
+    return !!evaluation ? evaluation.evaluationColor : "WHITE"
+  }
+
   renderStudent(student, index) {
-    const evaCount = student.evaluations.length
-    const evaColor = !!student.evaluations[evaCount-1] ? student.evaluations[evaCount-1].evaluationColor : "WHITE"
+    const evaColor = this.getLastEvaColor(student.evaluations)
 
     const color = this.getEvaColor(evaColor)
 
@@ -110,11 +176,18 @@ class SchoolClass extends PureComponent {
           onClick={ this.newStudent.bind(this) }
           label="New Student"
           primary={true} />
+
+          <RaisedButton
+            label="Ask a question"
+            primary={true}
+            onClick={this.getStudent.bind(this)}
+             />
+
         <Paper className="paper">
 
         <LinearProgress color="red" mode="determinate" value={20} />
         <LinearProgress color="yellow" mode="determinate" value={30} />
-        <LinearProgress color="blue" mode="determinate" value={50} />
+        <LinearProgress color="green" mode="determinate" value={50} />
         <br/>
           <div style={styles.root}>
             <GridList cols={3} padding={20} >
